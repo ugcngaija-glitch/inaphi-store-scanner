@@ -1,0 +1,52 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Inaphi × Fit Edit Scanner</title>
+  <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+  <style>
+    body { font-family: Arial, sans-serif; max-width: 480px; margin: auto; padding: 20px; background: #f7f3ec; color: #30251f; }
+    button { width: 100%; padding: 15px; margin: 10px 0; border: 0; border-radius: 9px; background: #402c25; color: white; font-size: 16px; }
+    #reader { margin-top: 16px; }
+    #result { overflow-wrap: anywhere; }
+  </style>
+</head>
+<body>
+  <h2>INAPHI × FIT EDIT</h2>
+  <p>Store Barcode Scanner</p>
+  <button id="start" onclick="startScanner()">Start Camera & Scan</button>
+  <div id="reader"></div>
+  <p id="result">Ready to scan.</p>
+
+  <script>
+    let scanner;
+
+    async function startScanner() {
+      const result = document.getElementById('result');
+      result.textContent = 'Starting camera…';
+
+      try {
+        scanner = new Html5Qrcode('reader');
+        await scanner.start(
+          { facingMode: 'environment' },
+          { fps: 10, qrbox: { width: 280, height: 120 } },
+          async text => {
+            result.textContent = 'Barcode detected: ' + text;
+            await scanner.stop();
+            scanner.clear();
+            scanner = null;
+            document.getElementById('start').textContent = 'Scan Again';
+          },
+          () => {}
+        );
+        result.textContent = 'Camera ready. Point it at a barcode.';
+      } catch (error) {
+        result.textContent = 'Camera error: ' + error;
+        scanner = null;
+      }
+    }
+  </script>
+</body>
+  
+</html>
