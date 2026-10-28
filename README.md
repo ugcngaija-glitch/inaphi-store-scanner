@@ -1,0 +1,1 @@
+# inaphi-store-scanner
